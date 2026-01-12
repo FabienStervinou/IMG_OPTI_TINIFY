@@ -39,13 +39,23 @@ cd image-optimizer
 ### 2. Installer les dépendances
 
 ```bash
-pip install pillow tinify
+pip install pillow tinify python-dotenv
 
 # Pour le support AVIF - OPTIONNEL
 pip install pillow-avif-plugin
 ```
 
 ### 3. Définir variable d'environnement
+
+**Option 1 : Fichier `.env` (recommandé)**
+
+Créez un fichier `.env` à la racine du projet :
+
+```bash
+echo "TINIFY_KEY=VOTRE_CLE_API" > .env
+```
+
+**Option 2 : Variable d'environnement système**
 
 ```bash
 export TINIFY_KEY="VOTRE_CLE_API"

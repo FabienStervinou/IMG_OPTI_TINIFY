@@ -8,6 +8,16 @@ from pathlib import Path
 
 from PIL import Image
 
+
+try:
+    from dotenv import load_dotenv
+
+    script_dir = Path(__file__).parent.resolve()
+    env_path = script_dir / ".env"
+    load_dotenv(dotenv_path=env_path)
+except ImportError:
+    pass
+
 try:
     import pillow_avif
     AVIF_SUPPORTED = True
@@ -180,9 +190,18 @@ def main():
         print("Erreur: tinify n'est pas installé. Fais: pip install tinify", file=sys.stderr)
         sys.exit(1)
 
-    if args.tinypng and not os.environ.get("TINIFY_KEY"):
-        print("Erreur: TINIFY_KEY manquant. Ex: export TINIFY_KEY='...'", file=sys.stderr)
-        sys.exit(1)
+    if args.tinypng:
+        tinify_key = os.environ.get("TINIFY_KEY")
+        if not tinify_key:
+            script_dir = Path(__file__).parent.resolve()
+            env_path = script_dir / ".env"
+            print("Erreur: TINIFY_KEY manquant.", file=sys.stderr)
+            print(f"Créez un fichier .env dans {script_dir} avec: TINIFY_KEY='votre_cle'", file=sys.stderr)
+            print("Ou utilisez: export TINIFY_KEY='votre_cle'", file=sys.stderr)
+            if env_path.exists():
+                print(f"Note: Le fichier .env existe à {env_path} mais la clé n'a pas été chargée.", file=sys.stderr)
+                print("Assurez-vous que python-dotenv est installé: pip install python-dotenv", file=sys.stderr)
+            sys.exit(1)
 
     if not input_dir.exists():
         print(f"Erreur: dossier introuvable: {input_dir}", file=sys.stderr)
